@@ -1,0 +1,36 @@
+user www-data;
+events {
+}
+
+http {
+   include mime.types;
+
+   server {
+      listen 80;
+      server_name 192.168.5.194;
+
+      root /home/avinogradov/sites/avinogradov;
+
+      index index.php index.html;
+
+      location / {
+         try_files $uri $uri/ =404;
+      }
+
+      location ~ \.php$ {
+
+         include fastcgi.conf;
+         fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+      }
+
+      location /phpmyadmin {
+         root /usr/share/;
+         index index.php;
+
+         location ~ /phpmyadmin/(.+\.php)$ {
+            include fastcgi.conf;
+            fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+         }
+      }
+   }
+}
